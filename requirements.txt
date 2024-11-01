@@ -9,7 +9,7 @@ label-studio
 label-studio-sdk
 pillow
 donut-python
-mysqlclient
+PyMySQL
 nltk
 word2number
 gradio
