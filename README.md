@@ -1,5 +1,14 @@
 # Cheque Processing Using OCR
 
+![Python](https://img.shields.io/badge/Python-3.7%2B-blue?style=flat&logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-Lightning-red?style=flat&logo=pytorch&logoColor=white)
+![Transformers](https://img.shields.io/badge/🤗-Transformers-yellow?style=flat)
+![ZenML](https://img.shields.io/badge/ZenML-MLOps-green?style=flat)
+![Gradio](https://img.shields.io/badge/Gradio-Interface-orange?style=flat)
+![MLflow](https://img.shields.io/badge/MLflow-Tracking-blue?style=flat&logo=mlflow&logoColor=white)
+![Label Studio](https://img.shields.io/badge/Label%20Studio-Annotation-purple?style=flat)
+![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat)
+
 An automated cheque processing system built with Donut Transformer and ZenML for end-to-end MLOps pipeline management.
 
 ## Overview
