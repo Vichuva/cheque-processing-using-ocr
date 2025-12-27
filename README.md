@@ -1,84 +1,33 @@
-# 🏦 ChequeEasy: OCR-Free Cheque Processing with AI
+# Cheque Processing Using OCR
 
-<div align="center">
+An automated cheque processing system built with Donut Transformer and ZenML for end-to-end MLOps pipeline management.
 
-![Python](https://img.shields.io/badge/Python-3.7%2B-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-Lightning-red)
-![Transformers](https://img.shields.io/badge/🤗-Transformers-yellow)
-![ZenML](https://img.shields.io/badge/ZenML-MLOps-green)
-![License](https://img.shields.io/badge/License-MIT-purple)
+## Overview
 
-**An end-to-end MLOps solution for automated cheque processing using Donut Transformer**
+This project implements an OCR-free cheque processing system that extracts and validates information from bank cheque images. The system uses the Donut (Document Understanding Transformer) model for information extraction and includes a complete MLOps pipeline for data annotation, model training, deployment, and inference.
 
-[Demo](https://huggingface.co/spaces/shivi/ChequeEasy) • [Dataset](https://huggingface.co/datasets/shivi/cheques_sample_data) • [Blog Post](https://medium.com/@shivalikasingh95/chequeeasy-banking-with-transformers-f49fb05960d3)
+### Key Features
 
-</div>
+- **Information Extraction**: Automatically extracts payee name, amounts (words & figures), bank name, and cheque date
+- **Smart Validation**: 
+  - Verifies legal and courtesy amounts match
+  - Detects stale cheques (older than 3 months)
+  - Spell-checks extracted text
+- **MLOps Pipeline**: Complete workflow using ZenML for data processing, training, and deployment
+- **Web Interface**: Gradio-based demo application for easy testing
 
----
-
-## 📋 Overview
-
-**ChequeEasy** is an intelligent cheque processing system that automates the extraction and validation of information from bank cheques. Built with state-of-the-art AI and MLOps best practices, it streamlines the cheque approval process for both bank officials and customers.
-
-### 🎯 Key Highlights
-
-- **OCR-Free Processing**: Uses Donut (Document Understanding Transformer) - no traditional OCR required
-- **End-to-End MLOps**: Complete pipeline from data annotation to model deployment using ZenML
-- **Automated Validation**: Checks for amount matching and stale cheque detection
-- **Production Ready**: Includes experiment tracking, model registry, and deployment workflows
-
----
-
-## ✨ Features
-
-### 🔍 Information Extraction
-- **Payee Name**: Automatically extracts the recipient's name
-- **Amount in Words**: Captures the legal amount written in text
-- **Amount in Figures**: Extracts the courtesy amount (numeric)
-- **Cheque Date**: Identifies the date on the cheque
-- **Bank Name**: Recognizes the issuing bank
-
-### ✅ Smart Validation
-- **Amount Matching**: Verifies that legal and courtesy amounts match
-- **Stale Cheque Detection**: Identifies cheques older than 3 months
-- **Format Validation**: Ensures data integrity
-
-### 🚀 MLOps Pipeline
-- **Data Annotation**: Integrated Label Studio workflow
-- **Model Training**: Automated fine-tuning with PyTorch Lightning
-- **Experiment Tracking**: MLflow integration for versioning
-- **Model Deployment**: Automated deployment based on performance metrics
-- **Inference Pipeline**: Production-ready prediction service
-
----
-
-## 🛠️ Technology Stack
-
-| Component | Technology |
-|-----------|-----------|
-| **Model** | [Donut Transformer](https://arxiv.org/abs/2111.15664) (OCR-free VDU) |
-| **MLOps Framework** | [ZenML](https://zenml.io/) |
-| **Training** | PyTorch Lightning |
-| **Experiment Tracking** | MLflow |
-| **Data Annotation** | Label Studio |
-| **Model Hub** | Hugging Face Transformers & Datasets |
-| **Demo Interface** | Gradio |
-| **Cloud Storage** | Azure Blob Storage (configurable) |
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 cheque-easy-main/
-├── app.py                          # Gradio demo application
-├── predict_cheque_parser.py        # Inference script
-├── run_label_process_data.py       # Labeling pipeline runner
+├── app.py                          # Gradio web interface
+├── predict_cheque_parser.py        # Prediction and validation logic
 ├── run_train_deploy.py             # Training & deployment pipeline runner
+├── run_label_process_data.py       # Data labeling pipeline runner
 ├── params.py                       # Configuration parameters
 ├── requirements.txt                # Python dependencies
 │
-├── pipelines/                      # ZenML pipelines
+├── pipelines/                      # ZenML pipeline definitions
 │   └── cheque_parser/
 │       ├── labelling.py           # Data annotation pipeline
 │       ├── data_postprocess.py    # Data processing pipeline
@@ -99,24 +48,34 @@ cheque-easy-main/
 │
 ├── materializers/                  # Custom ZenML materializers
 │   ├── config_materializer.py     # Config serialization
-│   └── donut_processor_materializer.py  # Processor serialization
+│   └── donut_processor_materializer.py
 │
-└── zenml_stacks/                   # ZenML stack configurations
-    ├── label_data_process_stack.sh
-    └── train_inference_stack.sh
+├── zenml_stacks/                   # ZenML stack setup scripts
+│   ├── label_data_process_stack.sh
+│   └── train_inference_stack.sh
+│
+└── examples/                       # Example cheque images
+    └── cheque_parser/
 ```
 
----
+## Technology Stack
 
-## 🚀 Quick Start
+- **Model**: Donut Transformer (OCR-free document understanding)
+- **MLOps Framework**: ZenML
+- **Training**: PyTorch Lightning
+- **Experiment Tracking**: MLflow
+- **Data Annotation**: Label Studio
+- **Web Interface**: Gradio
+- **Validation**: SymSpell, word2number
+
+## Installation
 
 ### Prerequisites
 
 - Python 3.7, 3.8, or 3.9
 - CUDA-capable GPU (recommended for training)
-- Azure account (optional, for cloud artifact storage)
 
-### Installation
+### Setup
 
 1. **Clone the repository**
    ```bash
@@ -127,116 +86,129 @@ cheque-easy-main/
 2. **Create virtual environment**
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    ```
 
-3. **Install ZenML (custom fork with Label Studio OCR support)**
-   ```bash
-   pip install git+https://github.com/shivalikasingh95/zenml.git@label_studio_ocr_config
-   pip install "zenml[server]"
-   ```
-
-4. **Install Transformers (custom fork with fixes)**
-   ```bash
-   pip install git+https://github.com/shivalikasingh95/transformers.git@image_utils_fix
-   ```
-
-5. **Install dependencies**
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-6. **Install additional dependencies**
-   ```bash
-   # For demo app
-   pip install word2number gradio symspellpy
-   
-   # For MySQL backend (optional)
-   sudo apt-get update
-   sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
-   ```
-
-7. **Initialize ZenML**
+4. **Initialize ZenML**
    ```bash
    zenml init
    zenml up
    ```
 
-### Running the Demo
+## Usage
+
+### Running the Web Demo
+
+Launch the Gradio interface to test cheque parsing:
 
 ```bash
 python app.py
 ```
 
-This launches a Gradio interface where you can upload cheque images and see the extracted information.
+The interface allows you to:
+- Upload cheque images
+- View extracted information (payee, amounts, date, bank)
+- Check amount validation status
+- Detect stale cheques
 
----
+### Running MLOps Pipelines
 
-## 📊 Dataset
+#### 1. Data Processing Pipeline
 
-The model is trained on a curated subset of the [Kaggle Cheque Images Dataset](https://www.kaggle.com/datasets/medali1992/cheque-images), focusing on 4 major Indian banks:
-- Axis Bank
-- Canara Bank
-- HSBC
-- ICICI Bank
-
-**Download the prepared dataset:**
-- 🤗 Hugging Face: [shivi/cheques_sample_data](https://huggingface.co/datasets/shivi/cheques_sample_data)
-
----
-
-## 🔧 Usage
-
-### 1. Data Processing Pipeline
-
-Converts raw cheque images and labels into Hugging Face dataset format:
+Processes raw cheque images and labels into training-ready format:
 
 ```bash
 python run_train_deploy.py --pipeline_type=data_process
 ```
 
-### 2. Training Pipeline
+#### 2. Training Pipeline
 
-Fine-tunes the Donut model on the prepared dataset:
+Trains the Donut model with automatic evaluation and deployment:
 
 ```bash
 python run_train_deploy.py --pipeline_type=train
 ```
 
-**Features:**
-- Automatic experiment tracking with MLflow
-- Model evaluation on test set
-- Conditional deployment based on accuracy threshold (>80%)
+Features:
+- Loads preprocessed dataset
+- Fine-tunes Donut model
+- Evaluates on test set
+- Automatically deploys if accuracy > 80%
+- Logs experiments to MLflow
 
-### 3. Inference Pipeline
+#### 3. Inference Pipeline
 
-Runs predictions on new cheque images:
+Runs predictions using the deployed model:
 
 ```bash
 python run_train_deploy.py --pipeline_type=inference
 ```
 
-### 4. Labeling Pipeline (Optional)
+#### 4. Data Labeling Pipeline (Optional)
 
-For custom dataset annotation using Label Studio:
+For custom dataset annotation:
 
 ```bash
-# Create annotation project
+# Create Label Studio project
 python run_label_process_data.py --pipeline_type=label
 
-# Start annotation
+# Start annotation interface
 zenml annotator dataset annotate <dataset_name>
 
 # Retrieve labeled data
 python run_label_process_data.py --pipeline_type=get_labelled_data
+
+# Process labeled data
+python run_label_process_data.py --pipeline_type=data_process
 ```
 
----
+## Configuration
 
-## ⚙️ Configuration
+### Model Parameters
 
-### Environment Variables for Labeling Stack
+Edit `params.py` to customize:
 
+```python
+class DonutTrainParams:
+    pretrained_ckpt = "nielsr/donut-base"
+    image_size = [960, 720]
+    max_length = 768
+    batch_size = 1
+    max_epochs = 30
+    lr = 3e-5
+    accelerator = "gpu"
+```
+
+### Deployment Parameters
+
+```python
+class ModelSaveDeployParams:
+    workers = 3
+    min_accuracy = 0.8  # Minimum accuracy for deployment
+    timeout = 60
+```
+
+### Data Parameters
+
+```python
+class DataParams:
+    annotation_file_path = "../cheques_dataset/cheques_label_file.csv"
+    cheques_dataset_path = '../cheques_dataset/cheque_images'
+    train_data_path = "../hf_cheques_data/train"
+    val_data_path = "../hf_cheques_data/val"
+    test_data_path = "../hf_cheques_data/test"
+```
+
+## ZenML Stack Setup
+
+### For Annotation (with Azure)
+
+Set environment variables:
 ```bash
 export ANNOT_STACK_NAME="annotation_stack"
 export AZURE_KEY_VAULT="your-key-vault"
@@ -247,8 +219,14 @@ export LABEL_STUDIO_API_KEY="your-label-studio-token"
 export LABEL_DATA_STORAGE_BUCKET_NAME="az://label-data-bucket"
 ```
 
-### Environment Variables for Training Stack
+Run setup:
+```bash
+bash zenml_stacks/label_data_process_stack.sh
+```
 
+### For Training & Inference
+
+Set environment variables:
 ```bash
 export TRAIN_STACK_NAME="training_stack"
 export MLFLOW_TRACKING_URI="your-mlflow-uri"
@@ -256,126 +234,84 @@ export MLFLOW_USERNAME="your-username"
 export MLFLOW_PASSWORD="your-password"
 ```
 
-### Model Parameters
-
-Edit `params.py` to customize:
-- Image size: `[960, 720]`
-- Batch size: `1`
-- Max epochs: `30`
-- Learning rate: `3e-5`
-- Minimum accuracy for deployment: `0.8`
-
----
-
-## 🎯 Model Architecture
-
-**Donut (Document Understanding Transformer)** is an OCR-free approach to Visual Document Understanding (VDU):
-
-- **Encoder**: Vision Transformer (ViT) processes document images
-- **Decoder**: Transformer decoder generates structured text output
-- **No OCR Required**: End-to-end trainable without intermediate OCR steps
-- **Task-Agnostic**: Can handle classification, extraction, and VQA
-
-**Benefits over OCR-based approaches:**
-- ✅ No need for separate OCR + downstream models
-- ✅ Understands document structure natively
-- ✅ No hand-crafted rules required
-- ✅ Better handling of complex layouts
-
----
-
-## 🎨 Demo
-
-Try the live demo on Hugging Face Spaces:
-
-🔗 **[ChequeEasy Demo](https://huggingface.co/spaces/shivi/ChequeEasy)**
-
-Upload a cheque image and instantly see:
-- Extracted information (payee, amounts, date, bank)
-- Amount validation status
-- Stale cheque warning
-
----
-
-## 🏗️ ZenML Stack Setup
-
-### Annotation Stack
-
-```bash
-bash zenml_stacks/label_data_process_stack.sh
-```
-
-**Components:**
-- Artifact Store: Azure Blob Storage
-- Secrets Manager: Azure Key Vault
-- Annotator: Label Studio
-
-### Training & Inference Stack
-
+Run setup:
 ```bash
 bash zenml_stacks/train_inference_stack.sh
 ```
 
-**Components:**
-- Experiment Tracker: MLflow
-- Model Deployer: MLflow
-- Artifact Store: Local or Cloud
+## Extracted Fields
+
+The system extracts the following information from cheques:
+
+| Field | Description |
+|-------|-------------|
+| **Payee Name** | Recipient of the cheque |
+| **Amount in Words** | Legal amount (written text) |
+| **Amount in Figures** | Courtesy amount (numeric) |
+| **Bank Name** | Issuing bank |
+| **Cheque Date** | Date on the cheque |
+
+## Validation Features
+
+### Amount Matching
+- Spell-checks the legal amount using SymSpell
+- Converts words to numbers using word2number
+- Compares with courtesy amount
+- Returns match status
+
+### Stale Cheque Detection
+- Calculates months between current date and cheque date
+- Flags cheques older than 3 months
+- Helps prevent processing of expired cheques
+
+## Model Architecture
+
+The project uses **Donut (Document Understanding Transformer)**:
+
+- **Encoder**: Vision Transformer (ViT) for image processing
+- **Decoder**: Transformer decoder for text generation
+- **Task**: Information extraction with custom prompt `<parse-cheque>`
+- **Advantage**: No separate OCR step required
+
+## Development
+
+### Adding New Fields
+
+To extract additional fields (e.g., MICR code, account number):
+
+1. Update `params.py`:
+   ```python
+   cheque_parser_labels = ["payee_name", "bank_name", "amt_in_words", 
+                          "amt_in_figures", "cheque_date", "micr_code"]
+   ```
+
+2. Update annotation configuration in `run_label_process_data.py`
+
+3. Retrain the model with updated labels
+
+### Custom Datasets
+
+To use your own dataset:
+
+1. Prepare data in the format specified in `DataParams`
+2. Update paths in `params.py`
+3. Modify `import_clean_data` step if needed
+4. Run data processing pipeline
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contributing
+
+Contributions are welcome! Areas for improvement:
+
+- Support for more banks and cheque formats
+- Additional field extraction (MICR, account number, signature)
+- Multi-language support
+- Improved validation logic
+- Performance optimizations
 
 ---
 
-## 📈 Performance
-
-The model achieves:
-- **Accuracy**: >80% on test set (deployment threshold)
-- **Inference Speed**: Real-time processing on GPU
-- **Supported Banks**: 4 major Indian banks (expandable)
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can help:
-
-1. **Extend to more banks**: Add training data for additional banks
-2. **Extract more fields**: MICR code, cheque number, account number
-3. **Improve accuracy**: Fine-tune hyperparameters or augment data
-4. **Add features**: Multi-language support, signature verification
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Original Dataset**: [Kaggle Cheque Images](https://www.kaggle.com/datasets/medali1992/cheque-images) by medali1992
-- **Donut Model**: [OCR-free Document Understanding Transformer](https://arxiv.org/abs/2111.15664) by Naver Clova
-- **ZenML**: For the amazing MLOps framework
-- **Hugging Face**: For Transformers and Datasets libraries
-
----
-
-## 📚 References
-
-- [Donut Paper](https://arxiv.org/abs/2111.15664) - Kim et al., 2021
-- [ZenML Documentation](https://docs.zenml.io/)
-- [Blog Post](https://medium.com/@shivalikasingh95/chequeeasy-banking-with-transformers-f49fb05960d3) - Detailed project walkthrough
-
----
-
-## 📧 Contact
-
-For questions or feedback, please open an issue on GitHub.
-
----
-
-<div align="center">
-
-**Built with ❤️ for ZenML's Month of MLOps Competition**
-
-⭐ Star this repo if you find it useful!
-
-</div>
+**Built with ZenML for end-to-end MLOps**
